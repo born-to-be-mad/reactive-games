@@ -2,6 +2,8 @@ package by.dma.reactivegames.exercises;
 
 import java.io.IOException;
 
+import by.dma.reactivegames.sources.ReactiveSources;
+
 /**
  * Use ReactiveSources to do the exercise.
  *
@@ -15,10 +17,13 @@ public class ReactiveSourceOperations {
     public static void main(String... args) throws IOException {
         System.out.printf("%s %s %s%n", LINE_DELIMITER, "intNumbersFlux & userFlux", LINE_DELIMITER);
         // Print all numbers in the `intNumbersFlux` stream
-        // TODO: Write code here
+
+        ReactiveSources.intNumbersFlux()
+                .subscribe(element -> System.out.println("intNumbersFlux element:" + element));
 
         // Print all users in the `userFlux` stream
-        // TODO: Write code here
+        ReactiveSources.userFlux()
+                .subscribe(user -> System.out.println("userFlux element:" + user));
 
         // Get all numbers in the `intNumbersFlux` stream
         // into a List and print the list and its size
