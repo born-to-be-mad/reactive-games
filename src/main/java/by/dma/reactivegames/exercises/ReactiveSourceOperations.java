@@ -47,8 +47,14 @@ public class ReactiveSourceOperations {
         System.out.printf("integer variable from mono: %d%n", number);
         ReactiveSources.intNumberMono().blockOptional().ifPresent(System.out::println);
 
+        System.out.printf("%s %s %s%n", LINE_DELIMITER, "error and completion hooks", LINE_DELIMITER);
         // Subscribe to a flux using the error and completion hooks
-        // TODO: Write code here
+        ReactiveSources.intNumbersFluxWithException()
+                .subscribe(
+                        element -> System.out.printf("consume intNumbersFluxWithException element: %d%n", element),
+                        error -> System.out.printf("intNumbersFluxWithException error: %s%n", error),
+                        () -> System.out.println("intNumbersFluxWithException completed")
+                );
 
         // Subscribe to a flux using an implementation of BaseSubscriber
         // TODO: Write code here
