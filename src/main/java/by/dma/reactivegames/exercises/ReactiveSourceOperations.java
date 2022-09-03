@@ -1,8 +1,11 @@
 package by.dma.reactivegames.exercises;
 
 import java.io.IOException;
+import java.util.List;
 
 import by.dma.reactivegames.sources.ReactiveSources;
+import by.dma.reactivegames.sources.User;
+import reactor.core.publisher.Flux;
 
 /**
  * Use ReactiveSources to do the exercise.
@@ -17,17 +20,22 @@ public class ReactiveSourceOperations {
     public static void main(String... args) throws IOException {
         System.out.printf("%s %s %s%n", LINE_DELIMITER, "intNumbersFlux & userFlux", LINE_DELIMITER);
         // Print all numbers in the `intNumbersFlux` stream
-
-        ReactiveSources.intNumbersFlux()
-                .subscribe(element -> System.out.println("intNumbersFlux element:" + element));
+        Flux<Integer> integerPublisher = ReactiveSources.intNumbersFlux();
+        integerPublisher.subscribe(element -> System.out.println("consume integerFlux element:" + element));
+        integerPublisher.subscribe(element -> System.out.println("consume again integerFlux element:" + element));
 
         // Print all users in the `userFlux` stream
-        ReactiveSources.userFlux()
+        Flux<User> userPublisher = ReactiveSources.userFlux();
+        userPublisher
                 .subscribe(user -> System.out.println("userFlux element:" + user));
 
-        // Get all numbers in the `intNumbersFlux` stream
-        // into a List and print the list and its size
-        // TODO: Write code here
+        // Get all numbers in the `intNumbersFlux` stream into a List and print the list and its size
+/*         List<Integer> integerList = ReactiveSources.intNumbersFlux()
+                .transform(Flux::collectList)
+                .blockFirst(); */
+        List<Integer> integerList = ReactiveSources.intNumbersFlux().toStream().toList();
+        System.out.printf("integerList[size=%d] = %s%n", integerList.size(), integerList);
+
 
         System.out.printf("%s %s %s%n", LINE_DELIMITER, "intNumberMono & userMono", LINE_DELIMITER);
         // Print the value from `intNumberMono` when it emits
