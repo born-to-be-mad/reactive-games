@@ -6,6 +6,7 @@ import java.util.List;
 import by.dma.reactivegames.sources.ReactiveSources;
 import by.dma.reactivegames.sources.User;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 /**
  * Use ReactiveSources to do the exercise.
@@ -36,13 +37,15 @@ public class ReactiveSourceOperations {
         List<Integer> integerList = ReactiveSources.intNumbersFlux().toStream().toList();
         System.out.printf("integerList[size=%d] = %s%n", integerList.size(), integerList);
 
-
         System.out.printf("%s %s %s%n", LINE_DELIMITER, "intNumberMono & userMono", LINE_DELIMITER);
         // Print the value from `intNumberMono` when it emits
-        // TODO: Write code here
+        Mono<Integer> integerMono = ReactiveSources.intNumberMono();
+        integerMono.subscribe(element -> System.out.printf("consume integerMono element: %d%n", element));
 
         // Get the value from the Mono(`intNumberMono`) into an integer variable
-        // TODO: Write code here
+        Integer number = ReactiveSources.intNumberMono().block();
+        System.out.printf("integer variable from mono: %d%n", number);
+        ReactiveSources.intNumberMono().blockOptional().ifPresent(System.out::println);
 
         // Subscribe to a flux using the error and completion hooks
         // TODO: Write code here
