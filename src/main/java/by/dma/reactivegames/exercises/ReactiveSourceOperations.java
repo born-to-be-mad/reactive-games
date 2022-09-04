@@ -37,7 +37,10 @@ public class ReactiveSourceOperations {
 /*         List<Integer> integerList = ReactiveSources.intNumbersFlux()
                 .transform(Flux::collectList)
                 .blockFirst(); */
-        List<Integer> integerList = ReactiveSources.intNumbersFlux().toStream().toList();
+        List<Integer> integerList = ReactiveSources.intNumbersFlux()
+                .log()
+                .toStream()
+                .toList();
         System.out.printf("integerList[size=%d] = %s%n", integerList.size(), integerList);
 
         System.out.printf("%s %s %s%n", LINE_DELIMITER, "intNumberMono & userMono", LINE_DELIMITER);
@@ -64,26 +67,44 @@ public class ReactiveSourceOperations {
                 .subscribe(new MyCustomSubscriber<>());
 
         System.out.printf("%s %s %s%n", LINE_DELIMITER, "unresponsiveFlux & unresponsiveMono", LINE_DELIMITER);
-        // Get the value from the Mono into a String variable but give up after 5 seconds
-        // TODO: Write code here
+        // Get the value from 'unresponsiveMono' into a String variable but give up after 5 seconds
+/*         String stringFromUnresponsiveMono = ReactiveSources.unresponsiveMono()
+                .doOnError(throwable -> System.out.printf("unresponsiveMono error: %s%n", throwable.getMessage()))
+                .doOnCancel(() -> System.out.println("unresponsiveMono cancelled"))
+                .block(Duration.ofSeconds(5)); */
 
-        // Get the value from unresponsiveFlux into a String list but give up after 5 seconds
-        // Come back and do this when you've learnt about operators!
-        // TODO: Write code here
+        // Get the value from 'unresponsiveFlux' into a String list but give up after 5 seconds(use Stream operators)
+        //List<String> listFromUnresponsiveFlux = ReactiveSources.unresponsiveFlux().toStream().toList();
 
         System.out.printf("%s %s %s%n", LINE_DELIMITER, "intNumbersFlux & intNumbersFluxWithRepeat", LINE_DELIMITER);
 
         // Print all values from intNumbersFlux that's greater than 5
-        // TODO: Write code here
+        System.out.println("Print all values from intNumbersFlux that's greater than 5");
+        ReactiveSources.intNumbersFlux()
+                .log()
+                .filter(element -> element > 5)
+                .subscribe(System.out::println);
 
-        // Print 10 times each value from intNumbersFlux that's greater than 5
-        // TODO: Write code here
+        // Print 10 multiplied by each value from intNumbersFlux that's greater than 5
+        System.out.println("Print 10 multiplied by each value from intNumbersFlux that's greater than 5");
+        ReactiveSources.intNumbersFlux()
+                .filter(element -> element > 5)
+                .map(element -> element * 10)
+                .subscribe(System.out::println);
 
-        // Print 10 times each value from intNumbersFlux for the first 3 numbers emitted that's greater than 5
-        // TODO: Write code here
+        // Print 10 multiplied by each value from intNumbersFlux for the first 3 numbers emitted that's greater than 5
+        System.out.println("Print 10 multiplied by each value from intNumbersFlux for the first 3 numbers emitted that's greater than 5");
+        ReactiveSources.intNumbersFlux()
+                .filter(element -> element > 5)
+                .map(element -> element * 10)
+                .take(3)
+                .subscribe(System.out::println);
 
         // Print each value from intNumbersFlux that's greater than 20. Print -1 if no elements are found
-        // TODO: Write code here
+        ReactiveSources.intNumbersFlux()
+                .filter(element -> element > 20)
+                .defaultIfEmpty(-1)
+                .subscribe(System.out::println);
 
         // Switch ints from intNumbersFlux to the right user from userFlux
         // TODO: Write code here
