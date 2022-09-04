@@ -3,8 +3,11 @@ package by.dma.reactivegames.exercises;
 import java.io.IOException;
 import java.util.List;
 
+import org.reactivestreams.Subscription;
+
 import by.dma.reactivegames.sources.ReactiveSources;
 import by.dma.reactivegames.sources.User;
+import reactor.core.publisher.BaseSubscriber;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -52,12 +55,13 @@ public class ReactiveSourceOperations {
         ReactiveSources.intNumbersFluxWithException()
                 .subscribe(
                         element -> System.out.printf("consume intNumbersFluxWithException element: %d%n", element),
-                        error -> System.out.printf("intNumbersFluxWithException error: %s%n", error),
+                        error -> System.out.printf("intNumbersFluxWithException error: %s%n", error.getMessage()),
                         () -> System.out.println("intNumbersFluxWithException completed")
                 );
 
         // Subscribe to a flux using an implementation of BaseSubscriber
-        // TODO: Write code here
+        ReactiveSources.intNumbersFluxWithException()
+                .subscribe(new MyCustomSubscriber<>());
 
         System.out.printf("%s %s %s%n", LINE_DELIMITER, "unresponsiveFlux & unresponsiveMono", LINE_DELIMITER);
         // Get the value from the Mono into a String variable but give up after 5 seconds
@@ -113,5 +117,25 @@ public class ReactiveSourceOperations {
 
         System.out.println("Press a key to end");
         System.in.read();
+    }
+}
+
+class MyCustomSubscriber<T> extends BaseSubscriber<T> {
+
+    @Override
+    protected void hookOnSubscribe(Subscription subscription) {
+        System.out.println("hookOnSubscribe");
+        request(1);
+    }
+
+    @Override
+    protected void hookOnNext(T value) {
+        System.out.println(value.toString() + " received");
+        request(1);
+    }
+
+    @Override
+    protected void hookOnError(Throwable throwable) {
+        System.out.println("hookOnError:" + throwable.getMessage());
     }
 }
