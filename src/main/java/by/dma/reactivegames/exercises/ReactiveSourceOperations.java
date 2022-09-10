@@ -106,14 +106,22 @@ public class ReactiveSourceOperations {
                 .defaultIfEmpty(-1)
                 .subscribe(System.out::println);
 
-        // Switch ints from intNumbersFlux to the right user from userFlux
-        // TODO: Write code here
+        // Switch ints from `intNumbersFlux` to the right user from `userFlux`
+        ReactiveSources.intNumbersFlux()
+                .flatMap(element -> ReactiveSources.userFlux().filter(user -> user.id() == element).take(1))
+                .subscribe(System.out::println);
 
-        // Print only distinct numbers from intNumbersFluxWithRepeat
-        // TODO: Write code here
+        // Print only distinct numbers from `intNumbersFluxWithRepeat`
+        ReactiveSources.intNumbersFluxWithRepeat()
+                .distinct()
+                .log()
+                .subscribe(System.out::println);
 
-        // Print from intNumbersFluxWithRepeat excluding immediately repeating numbers
-        // TODO: Write code here
+        // Print from `intNumbersFluxWithRepeat` excluding immediately repeating numbers
+        ReactiveSources.intNumbersFluxWithRepeat()
+                .distinctUntilChanged()
+                .log()
+                .subscribe(System.out::println);
 
         System.out.printf("%s %s %s%n", LINE_DELIMITER, "intNumbersFluxWithException", LINE_DELIMITER);
         // Print values from intNumbersFluxWithException and print a message when error happens
