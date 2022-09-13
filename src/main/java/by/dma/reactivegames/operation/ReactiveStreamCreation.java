@@ -7,7 +7,7 @@ import java.util.stream.Stream;
 import reactor.core.publisher.Flux;
 
 /**
- * Reactive Stream Creation sa,ples.
+ * Reactive Stream Creation samples.
  *
  * @author dzmitry.marudau
  * @since 2022.09
