@@ -101,38 +101,55 @@ public class ReactiveSourceOperations {
                 .subscribe(System.out::println);
 
         // Print each value from intNumbersFlux that's greater than 20. Print -1 if no elements are found
+        System.out.println("Print each value from intNumbersFlux that's greater than 20. Print -1 if no elements are found");
         ReactiveSources.intNumbersFlux()
                 .filter(element -> element > 20)
                 .defaultIfEmpty(-1)
                 .subscribe(System.out::println);
 
         // Switch ints from `intNumbersFlux` to the right user from `userFlux`
+        System.out.println("Switch ints from `intNumbersFlux` to the right user from `userFlux`");
         ReactiveSources.intNumbersFlux()
                 .flatMap(element -> ReactiveSources.userFlux().filter(user -> user.id() == element).take(1))
                 .subscribe(System.out::println);
 
         // Print only distinct numbers from `intNumbersFluxWithRepeat`
+        System.out.println("Print only distinct numbers from `intNumbersFluxWithRepeat`");
         ReactiveSources.intNumbersFluxWithRepeat()
                 .distinct()
                 .log()
                 .subscribe(System.out::println);
 
         // Print from `intNumbersFluxWithRepeat` excluding immediately repeating numbers
+        System.out.println("Print from `intNumbersFluxWithRepeat` excluding immediately repeating numbers");
         ReactiveSources.intNumbersFluxWithRepeat()
                 .distinctUntilChanged()
                 .log()
                 .subscribe(System.out::println);
 
-        System.out.printf("%s %s %s%n", LINE_DELIMITER, "intNumbersFluxWithException", LINE_DELIMITER);
         // Print values from intNumbersFluxWithException and print a message when error happens
-        // TODO: Write code here
+        System.out.printf("%s %s %s%n", LINE_DELIMITER, "intNumbersFluxWithException", LINE_DELIMITER);
+        // version 1: swallow the error
+        ReactiveSources.intNumbersFluxWithException()
+                .subscribe(System.out::println, throwable ->
+                        System.out.printf("intNumbersFluxWithException(fallback error): %s%n", throwable.getMessage()));
+        // version 2: do something, but do not stop the stream and swallow the exception
+/*         ReactiveSources.intNumbersFluxWithException()
+                .doOnError(throwable -> System.out.printf("intNumbersFluxWithException(doOnError): %s%n", throwable.getMessage()))
+                .subscribe(System.out::println); */
 
         // Print values from intNumbersFluxWithException and continue on errors
-        // TODO: Write code here
+        System.out.println("Print values from intNumbersFluxWithException and continue on errors");
+        ReactiveSources.intNumbersFluxWithException()
+                .onErrorContinue((throwable, element) ->
+                        System.out.printf("intNumbersFluxWithException onErrorContinue: %s%n", throwable.getMessage()))
+                .subscribe(System.out::println);
 
-        // Print values from intNumbersFluxWithException and when errors
-        // happen, replace with a fallback sequence of -1 and -2
-        // TODO: Write code here
+        // Print values from intNumbersFluxWithException and when errors happen, replace with a fallback sequence of -1 and -2
+        System.out.println("Print values from intNumbersFluxWithException and when errors happen, replace with a fallback sequence of -1 and -2");
+        ReactiveSources.intNumbersFluxWithException()
+                .onErrorResume(throwable -> Flux.just(-1, -2))
+                .subscribe(System.out::println);
 
         System.out.printf("%s %s %s%n", LINE_DELIMITER, "intNumbersFlux", LINE_DELIMITER);
         // Print size of intNumbersFlux after the last item returns
@@ -142,7 +159,6 @@ public class ReactiveSourceOperations {
         // TODO: Write code here
 
         // Transform to a sequence of sums of adjacent two numbers
-        // TODO: Write code here
 
         System.out.println("Press a key to end");
         System.in.read();
