@@ -153,12 +153,24 @@ public class ReactiveSourceOperations {
 
         System.out.printf("%s %s %s%n", LINE_DELIMITER, "intNumbersFlux", LINE_DELIMITER);
         // Print size of intNumbersFlux after the last item returns
-        // TODO: Write code here
+        System.out.println("Print size of intNumbersFlux after the last item returns");
+        ReactiveSources.intNumbersFlux()
+                .count()
+                .subscribe(size -> System.out.printf("intNumbersFlux size: %d%n", size));
 
         // Collect all items of intNumbersFlux into a single list and print it
-        // TODO: Write code here
+        System.out.println("Collect all items of intNumbersFlux into a single list and print it");
+        ReactiveSources.intNumbersFlux()
+                .collectList()
+                .subscribe(list -> System.out.printf("intNumbersFlux list: %s%n", list));
 
         // Transform to a sequence of sums of adjacent two numbers
+        System.out.println("Transform to a sequence of sums of adjacent two numbers");
+        ReactiveSources.intNumbersFlux()
+                .buffer(2)
+                //.map(list -> list.get(0) + list.get(1))
+                .flatMap(list -> list.stream().reduce(Integer::sum).map(Mono::just).orElse(Mono.empty()))
+                .subscribe(System.out::println);
 
         System.out.println("Press a key to end");
         System.in.read();
