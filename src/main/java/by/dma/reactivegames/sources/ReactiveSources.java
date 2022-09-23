@@ -17,7 +17,8 @@ public final class ReactiveSources {
     }
 
     public static Flux<String> stringNumbersFlux() {
-        return Flux.just("one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten")
+        return Flux
+                .just("one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten")
                 .delayElements(Duration.ofSeconds(1));
     }
 
@@ -40,25 +41,27 @@ public final class ReactiveSources {
     }
 
     public static Mono<Integer> intNumberMono() {
-        return Mono.just(42)
+        return Mono
+                .just(42)
                 .delayElement(Duration.ofSeconds(1));
     }
 
     public static Flux<User> userFlux() {
-        return Flux.just(
-                new User(1, "Lionel", "Messi"),
-                new User(2, "Cristiano", "Ronaldo"),
-                new User(2, "Diego", "Maradona"),
-                new User(4, "Zinedine", "Zidane"),
-                new User(5, "Jürgen", "Klinsmann"),
-                new User(6, "Gareth", "Bale")
-        ).delayElements(Duration.ofSeconds(1));
+        return Flux
+                .just(
+                        new User(1, "Lionel", "Messi"),
+                        new User(2, "Cristiano", "Ronaldo"),
+                        new User(2, "Diego", "Maradona"),
+                        new User(4, "Zinedine", "Zidane"),
+                        new User(5, "Jürgen", "Klinsmann"),
+                        new User(6, "Gareth", "Bale"))
+                .delayElements(Duration.ofSeconds(1));
     }
 
     public static Mono<User> userMono() {
-        return Mono.just(
-                new User(1, "Lionel", "Messi")
-        ).delayElement(Duration.ofSeconds(1));
+        return Mono
+                .just(new User(1, "Lionel", "Messi"))
+                .delayElement(Duration.ofSeconds(1));
 
     }
 

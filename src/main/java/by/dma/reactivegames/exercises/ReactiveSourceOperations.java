@@ -1,6 +1,7 @@
 package by.dma.reactivegames.exercises;
 
 import java.io.IOException;
+import java.time.Duration;
 import java.util.List;
 
 import org.reactivestreams.Subscription;
@@ -22,19 +23,19 @@ public class ReactiveSourceOperations {
     private static final String LINE_DELIMITER = "#".repeat(20);
 
     public static void main(String... args) throws IOException {
-        //playWithIntNumbersAndUserFlux();
+        // playWithIntNumbersAndUserFlux();
 
-        //playWithIntNumberMonoAndUserMono();
+        // playWithIntNumberMonoAndUserMono();
 
-        //playWithErrorAndCompletionHooks();
+        // playWithErrorAndCompletionHooks();
 
-        //playWIthUnresponsiveFluxAndMono();
+        playWithUnresponsiveFluxAndMono();
 
-        //playWithIntNumbersFluxAndIntNumbersFluxWithRepeat();
+        // playWithIntNumbersFluxAndIntNumbersFluxWithRepeat();
 
-        //playWIthIntNumbersFluxWithException();
+        // playWithIntNumbersFluxWithException();
 
-        playWithTransformation();
+        //playWithTransformation();
 
         System.out.println("# Press a key to end");
         System.in.read();
@@ -62,7 +63,7 @@ public class ReactiveSourceOperations {
                 .subscribe(x -> System.out.println("two-numbers-adjusted: " + x));
     }
 
-    private static void playWIthIntNumbersFluxWithException() {
+    private static void playWithIntNumbersFluxWithException() {
         System.out.printf("%s %s %s%n", LINE_DELIMITER, "intNumbersFluxWithException", LINE_DELIMITER);
         // Print values from intNumbersFluxWithException and print a message when error happens
         // version 1: swallow the error
@@ -82,7 +83,8 @@ public class ReactiveSourceOperations {
                 .subscribe(System.out::println);
 
         // Print values from intNumbersFluxWithException and when errors happen, replace with a fallback sequence of -1 and -2
-        System.out.println("# Print values from intNumbersFluxWithException and when errors happen, replace with a fallback sequence of -1 and -2");
+        System.out.println(
+                "# Print values from intNumbersFluxWithException and when errors happen, replace with a fallback sequence of -1 and -2");
         ReactiveSources.intNumbersFluxWithException()
                 .onErrorResume(throwable -> Flux.just(-1, -2))
                 .subscribe(System.out::println);
@@ -105,7 +107,8 @@ public class ReactiveSourceOperations {
                 .subscribe(System.out::println);
 
         // Print 10 multiplied by each value from intNumbersFlux for the first 3 numbers emitted that's greater than 5
-        System.out.println("# Print 10 multiplied by each value from intNumbersFlux for the first 3 numbers emitted that's greater than 5");
+        System.out.println(
+                "# Print 10 multiplied by each value from intNumbersFlux for the first 3 numbers emitted that's greater than 5");
         ReactiveSources.intNumbersFlux()
                 .filter(element -> element > 5)
                 .map(element -> element * 10)
@@ -113,7 +116,8 @@ public class ReactiveSourceOperations {
                 .subscribe(System.out::println);
 
         // Print each value from intNumbersFlux that's greater than 20. Print -1 if no elements are found
-        System.out.println("# Print each value from intNumbersFlux that's greater than 20. Print -1 if no elements are found");
+        System.out.println(
+                "# Print each value from intNumbersFlux that's greater than 20. Print -1 if no elements are found");
         ReactiveSources.intNumbersFlux()
                 .filter(element -> element > 20)
                 .defaultIfEmpty(-1)
@@ -140,16 +144,20 @@ public class ReactiveSourceOperations {
                 .subscribe(System.out::println);
     }
 
-    private static void playWIthUnresponsiveFluxAndMono() {
+    private static void playWithUnresponsiveFluxAndMono() {
         System.out.printf("%s %s %s%n", LINE_DELIMITER, "unresponsiveFlux & unresponsiveMono", LINE_DELIMITER);
         // Get the value from 'unresponsiveMono' into a String variable but give up after 5 seconds
-/*         String stringFromUnresponsiveMono = ReactiveSources.unresponsiveMono()
+        String stringFromUnresponsiveMono = ReactiveSources.unresponsiveMono()
                 .doOnError(throwable -> System.out.printf("unresponsiveMono error: %s%n", throwable.getMessage()))
                 .doOnCancel(() -> System.out.println("# unresponsiveMono cancelled"))
-                .block(Duration.ofSeconds(5)); */
+                .block(Duration.ofSeconds(5));
+        System.out.println("stringFromUnresponsiveMono = " + stringFromUnresponsiveMono);
 
         // Get the value from 'unresponsiveFlux' into a String list but give up after 5 seconds(use Stream operators)
-        //List<String> listFromUnresponsiveFlux = ReactiveSources.unresponsiveFlux().toStream().toList();
+        List<String> listFromUnresponsiveFlux = ReactiveSources.unresponsiveFlux()
+                .collectList()
+                .block(Duration.ofSeconds(5));
+        System.out.println("listFromUnresponsiveFlux = " + listFromUnresponsiveFlux);
     }
 
     private static void playWithErrorAndCompletionHooks() {
