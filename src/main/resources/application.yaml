@@ -1,4 +1,4 @@
 spring:
   main:
-    web-application-type: none
+    web-application-type: reactive
     banner-mode: off
