@@ -3,6 +3,7 @@ package by.dma.reactivegames.exercises;
 import java.io.IOException;
 import java.time.Duration;
 import java.util.List;
+import java.util.Objects;
 
 import org.reactivestreams.Subscription;
 
@@ -23,6 +24,23 @@ public class ReactiveSourceOperations {
     private static final String LINE_DELIMITER = "#".repeat(20);
 
     public static void main(String... args) throws IOException {
+        String resultString = Flux
+                .range(1, 100)
+                .map(Objects::toString)
+                .filter(s -> s.length() == 1)
+                .blockLast();
+        String resultStringViaHandle = String.valueOf(Flux
+                .range(1, 100)
+                .handle((integer, sink) -> {
+                    String str = integer.toString();
+                    if (str.length() == 1) {
+                        sink.next(str);
+                    }
+                })
+                .blockLast());
+        System.out.println("resultString = " + resultString);
+        System.out.println("resultStringViaHandle = " + resultStringViaHandle);
+
         // playWithIntNumbersAndUserFlux();
 
         // playWithIntNumberMonoAndUserMono();
